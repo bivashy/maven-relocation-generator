@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.bivashy.maven.plugin.output.RelocationOutput;
+import com.bivashy.maven.plugin.output.RelocationOutputFactory;
+import com.bivashy.maven.plugin.output.configuration.RelocationOutputConfiguration;
 import javax.inject.Inject;
 
 import org.apache.maven.artifact.Artifact;
@@ -34,20 +37,32 @@ public class GenerateRelocationMojo extends AbstractMojo {
     private MavenSession session;
     @Parameter(defaultValue = "${project}", readonly = true, required = true)
     private MavenProject project;
+    @Parameter(defaultValue = "${project.build.sourceEncoding}", required = true)
+    private String encoding;
+    @Parameter(defaultValue = "${project.build.directory}")
+    private File outputDirectory;
     @Parameter(required = true)
     private FilterConfiguration filter;
     @Parameter(required = true)
     private MapperConfiguration mapper;
+    @Parameter
+    private RelocationOutputConfiguration output;
     @Parameter
     private ArtifactSet artifactSet;
     @Inject
     private FilterFactory filterFactory;
     @Inject
     private MapperFactory mapperFactory;
+    @Inject
+    private RelocationOutputFactory outputFactory;
 
     public void execute() throws MojoExecutionException {
+        output.setEncoding(encoding);
+        output.setOutputDirectory(outputDirectory);
+
         Filter compiledFilter = filterFactory.create(filter);
         Mapper compiledMapper = mapperFactory.create(mapper);
+        RelocationOutput compiledOutput = outputFactory.create(output);
 
         Set<Artifact> artifacts = project.getArtifacts();
         ArtifactSelector selector = new ArtifactSelector(artifactSet);
@@ -67,12 +82,12 @@ public class GenerateRelocationMojo extends AbstractMojo {
                         .map(node -> new ArtifactJarNode(artifact, node))
                         .collect(Collectors.toList());
                 output.add(compiledMapper.map(nodes));
+                compiledOutput.output(nodes, compiledMapper);
             } catch (IOException e) {
                 getLog().error("Cannot open JarInputStream", e);
                 throw new MojoExecutionException(e);
             }
         }
-        getLog().info(output.stream().collect(Collectors.joining(System.lineSeparator())));
     }
 
 }
