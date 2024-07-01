@@ -14,7 +14,9 @@
         <maven-api.version>3.9.6</maven-api.version>
         <maven-plugin-tools.verion>3.11.0</maven-plugin-tools.verion>
         <groovy.version>4.0.18</groovy.version>
-        <plexus.version>4.0.0</plexus.version>
+        <plexus-utils.version>3.0.24</plexus-utils.version>
+        <plexus-xml.version>4.0.0</plexus-xml.version>
+        <mojo-executor.version>2.4.0</mojo-executor.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -52,7 +54,19 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>${plexus.version}</version>
+            <version>${plexus-utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-xml</artifactId>
+            <version>${plexus-xml.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.twdata.maven</groupId>
+            <artifactId>mojo-executor</artifactId>
+            <version>${mojo-executor.version}</version>
         </dependency>
 
         <dependency>

@@ -1,27 +1,5 @@
 package com.bivashy.maven.plugin.mojo;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import com.bivashy.maven.plugin.output.RelocationOutput;
-import com.bivashy.maven.plugin.output.RelocationOutputFactory;
-import com.bivashy.maven.plugin.output.configuration.RelocationOutputConfiguration;
-import javax.inject.Inject;
-
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.MavenProject;
-
 import com.bivashy.maven.plugin.filter.Filter;
 import com.bivashy.maven.plugin.filter.FilterFactory;
 import com.bivashy.maven.plugin.filter.configuration.FilterConfiguration;
@@ -29,6 +7,27 @@ import com.bivashy.maven.plugin.jar.JarPackage;
 import com.bivashy.maven.plugin.mapper.Mapper;
 import com.bivashy.maven.plugin.mapper.MapperFactory;
 import com.bivashy.maven.plugin.mapper.configuration.MapperConfiguration;
+import com.bivashy.maven.plugin.output.RelocationOutput;
+import com.bivashy.maven.plugin.output.RelocationOutputFactory;
+import com.bivashy.maven.plugin.output.configuration.RelocationOutputConfiguration;
+import javax.inject.Inject;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.BuildPluginManager;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.MavenProject;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 
 @Mojo(name = "generate", requiresDependencyResolution = ResolutionScope.COMPILE)
 public class GenerateRelocationMojo extends AbstractMojo {
@@ -50,6 +49,8 @@ public class GenerateRelocationMojo extends AbstractMojo {
     @Parameter
     private ArtifactSet artifactSet;
     @Inject
+    private BuildPluginManager pluginManager;
+    @Inject
     private FilterFactory filterFactory;
     @Inject
     private MapperFactory mapperFactory;
@@ -59,6 +60,11 @@ public class GenerateRelocationMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         output.setEncoding(encoding);
         output.setOutputDirectory(outputDirectory);
+        output.setExecutionEnvironment(executionEnvironment(
+                project,
+                session,
+                pluginManager
+        ));
 
         Filter compiledFilter = filterFactory.create(filter);
         Mapper compiledMapper = mapperFactory.create(mapper);
@@ -67,7 +73,6 @@ public class GenerateRelocationMojo extends AbstractMojo {
         Set<Artifact> artifacts = project.getArtifacts();
         ArtifactSelector selector = new ArtifactSelector(artifactSet);
 
-        List<String> output = new ArrayList<>();
         for (Artifact artifact : artifacts) {
             File artifactFile = artifact.getFile();
             String artifactType = artifact.getType();
@@ -81,7 +86,6 @@ public class GenerateRelocationMojo extends AbstractMojo {
                         .stream()
                         .map(node -> new ArtifactJarNode(artifact, node))
                         .collect(Collectors.toList());
-                output.add(compiledMapper.map(nodes));
                 compiledOutput.output(nodes, compiledMapper);
             } catch (IOException e) {
                 getLog().error("Cannot open JarInputStream", e);

@@ -22,6 +22,9 @@ public class RelocationOutputFactory {
         if (configuration.getFile() != null) {
             return new FileRelocationOutput(configuration.getOutputDirectory(), configuration.getFile(), configuration.getEncoding());
         }
+        if (configuration.isShadePlugin()) {
+            return new MavenShadeRelocationOutput(configuration.getExecutionEnvironment(), logger);
+        }
         return RelocationOutput.none();
     }
 
