@@ -15,6 +15,7 @@ public class FileRelocationOutput implements RelocationOutput {
 
     private final File outputFile;
     private final Charset encoding;
+    private BufferedWriter writer;
 
     public FileRelocationOutput(File outputDirectory, String file, String encoding) {
         this.outputFile = new File(outputDirectory, file);
@@ -31,9 +32,18 @@ public class FileRelocationOutput implements RelocationOutput {
     }
 
     private void outputToFile(Collection<ArtifactJarNode> artifactJarNodes, Mapper mapper) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile, true), encoding))) {
-            writer.write(mapper.map(artifactJarNodes));
-            writer.newLine();
+        if (writer == null)
+            this.writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile, true), encoding));
+        writer.write(mapper.map(artifactJarNodes));
+        writer.newLine();
+    }
+
+    @Override
+    public void close() {
+        try {
+            this.writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

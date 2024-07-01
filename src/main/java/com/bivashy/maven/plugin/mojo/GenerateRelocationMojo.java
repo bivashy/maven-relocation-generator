@@ -88,6 +88,8 @@ public class GenerateRelocationMojo extends AbstractMojo {
                 throw new MojoExecutionException(e);
             }
         }
+
+        compiledOutput.close();
     }
 
 }
