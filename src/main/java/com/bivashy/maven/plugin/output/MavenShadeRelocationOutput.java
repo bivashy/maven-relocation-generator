@@ -4,14 +4,12 @@ import com.bivashy.maven.plugin.jar.JarPackage;
 import com.bivashy.maven.plugin.mapper.Mapper;
 import com.bivashy.maven.plugin.mojo.ArtifactJarNode;
 import org.apache.maven.model.Plugin;
-import org.apache.maven.model.PluginExecution;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import java.util.Collection;
-import java.util.Optional;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
@@ -33,10 +31,7 @@ public class MavenShadeRelocationOutput implements RelocationOutput {
             return;
         }
 
-        Optional<PluginExecution> executionOptional = mavenShadePlugin.getExecutions().stream().findFirst();
-        if (!executionOptional.isPresent())
-            return;
-        this.configuration = (Xpp3Dom) executionOptional.get().getConfiguration();
+        this.configuration = (Xpp3Dom) mavenShadePlugin.getConfiguration();
     }
 
     @Override
