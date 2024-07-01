@@ -34,10 +34,8 @@ public class MavenShadeRelocationOutput implements RelocationOutput {
         }
 
         Optional<PluginExecution> executionOptional = mavenShadePlugin.getExecutions().stream().findFirst();
-        if (!executionOptional.isPresent()) {
-            logger.error("Maven shade plugin execution doesn't present!");
+        if (!executionOptional.isPresent())
             return;
-        }
         this.configuration = (Xpp3Dom) executionOptional.get().getConfiguration();
     }
 
