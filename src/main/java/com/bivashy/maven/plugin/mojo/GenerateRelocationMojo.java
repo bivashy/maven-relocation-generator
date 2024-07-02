@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
 
-@Mojo(name = "generate", requiresDependencyResolution = ResolutionScope.COMPILE)
+@Mojo(name = "generate", requiresDependencyResolution = ResolutionScope.RUNTIME)
 public class GenerateRelocationMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${session}", readonly = true, required = true)
