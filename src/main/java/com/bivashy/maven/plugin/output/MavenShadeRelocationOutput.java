@@ -33,6 +33,12 @@ public class MavenShadeRelocationOutput implements RelocationOutput {
         }
 
         this.configuration = (Xpp3Dom) mavenShadePlugin.getConfiguration();
+        if (!mavenShadePlugin.getExecutions().isEmpty()) {
+            logger.warn(
+                    "Duplicate maven-shade-plugin execution found! Build may take longer than usual, please make sure that maven-shade-plugin doesn't have " +
+                            "any <executions> present, " +
+                            "relocation-generator-maven-plugin will automatically execute maven-shade-plugin:shade instead of <executions>");
+        }
     }
 
     @Override
