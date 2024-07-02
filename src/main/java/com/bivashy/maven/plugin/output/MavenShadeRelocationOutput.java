@@ -10,6 +10,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.twdata.maven.mojoexecutor.MojoExecutor.ExecutionEnvironment;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import static org.twdata.maven.mojoexecutor.MojoExecutor.executeMojo;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
@@ -37,11 +38,11 @@ public class MavenShadeRelocationOutput implements RelocationOutput {
     @Override
     public void output(Collection<ArtifactJarNode> artifactJarNodes, Mapper mapper) {
         for (ArtifactJarNode artifactJarNode : artifactJarNodes) {
-            appendRelocation(artifactJarNode);
+            appendRelocation(artifactJarNode, mapper);
         }
     }
 
-    private void appendRelocation(ArtifactJarNode node) {
+    private void appendRelocation(ArtifactJarNode node, Mapper mapper) {
         String relocationPattern = node.getJarNode().getClearPath().replace(JarPackage.SEPARATOR, ".");
 
         if (configuration == null)
@@ -60,7 +61,7 @@ public class MavenShadeRelocationOutput implements RelocationOutput {
         Xpp3Dom shadedPattern = new Xpp3Dom("shadedPattern");
 
         pattern.setValue(relocationPattern);
-        shadedPattern.setValue("test." + relocationPattern);
+        shadedPattern.setValue(mapper.map(Collections.singleton(node)));
 
         relocation.addChild(pattern);
         relocation.addChild(shadedPattern);
