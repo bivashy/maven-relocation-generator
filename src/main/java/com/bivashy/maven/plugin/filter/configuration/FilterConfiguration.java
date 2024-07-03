@@ -5,6 +5,14 @@ public class FilterConfiguration {
     private String groovy;
     private BasicFilterConfiguration basic;
 
+    public FilterConfiguration() {
+    }
+
+    public FilterConfiguration(String groovy, BasicFilterConfiguration basic) {
+        this.groovy = groovy;
+        this.basic = basic;
+    }
+
     public String getGroovy() {
         return groovy;
     }
@@ -12,4 +20,5 @@ public class FilterConfiguration {
     public BasicFilterConfiguration getBasic() {
         return basic;
     }
+
 }

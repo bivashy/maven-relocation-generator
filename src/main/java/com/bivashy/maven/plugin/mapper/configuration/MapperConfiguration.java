@@ -6,6 +6,15 @@ public class MapperConfiguration {
     private String groovy;
     private boolean mavenShadePlugin;
 
+    public MapperConfiguration() {
+    }
+
+    public MapperConfiguration(FormattedMapperConfiguration formatted, String groovy, boolean mavenShadePlugin) {
+        this.formatted = formatted;
+        this.groovy = groovy;
+        this.mavenShadePlugin = mavenShadePlugin;
+    }
+
     public FormattedMapperConfiguration getFormatted() {
         return formatted;
     }

@@ -8,6 +8,15 @@ public class BasicFilterConfiguration {
     private int minFileCount;
     private Set<String> excludes;
 
+    public BasicFilterConfiguration() {
+    }
+
+    public BasicFilterConfiguration(int minDirectoryCount, int minFileCount, Set<String> excludes) {
+        this.minDirectoryCount = minDirectoryCount;
+        this.minFileCount = minFileCount;
+        this.excludes = excludes;
+    }
+
     public int getMinDirectoryCount() {
         return minDirectoryCount;
     }
