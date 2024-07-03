@@ -13,6 +13,19 @@ public class RelocationOutputConfiguration {
     private File outputDirectory;
     private ExecutionEnvironment executionEnvironment;
 
+    public RelocationOutputConfiguration() {
+    }
+
+    public RelocationOutputConfiguration(boolean log, String file, boolean shadePlugin, String encoding, File outputDirectory,
+                                         ExecutionEnvironment executionEnvironment) {
+        this.log = log;
+        this.file = file;
+        this.shadePlugin = shadePlugin;
+        this.encoding = encoding;
+        this.outputDirectory = outputDirectory;
+        this.executionEnvironment = executionEnvironment;
+    }
+
     public boolean isLog() {
         return log;
     }
